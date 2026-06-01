@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIP Argentina 1997 — Sector Agropecuario</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="mip_estilos.css" />
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════ -->
+  <div class="hero">
+    <div class="badge">Cuentas nacional y estructura económica - FCE UNNE</div>
+    <h1>Matriz Insumo-Producto y<br>el Sector Agropecuario</h1>
+    <p>Análisis de 5 sectores clave: Agricultura · Industria manufacturera · Electricidad, gas y agua · Comercio ·
+      Transporte</p>
+    <span class="fuente">Fuente: INDEC — Matriz Simétrica Insumo-Producto, República Argentina, 1997</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+     NAV
+══════════════════════════════════════════════ -->
+  <nav class="nav-tabs">
+    <button class="tab-btn active" onclick="mostrarSeccion('mip')">📊 La MIP</button>
+    <button class="tab-btn" onclick="mostrarSeccion('participacion')">🌾 Participación</button>
+    <button class="tab-btn" onclick="mostrarSeccion('multiplicadores')">⚡ Multiplicadores</button>
+    <button class="tab-btn" onclick="mostrarSeccion('simulador')">🔢 Simulador</button>
+    <button class="tab-btn" onclick="mostrarSeccion('encadenamiento')">🔗 Encadenamientos</button>
+    <button class="tab-btn" onclick="mostrarSeccion('quiz')">✅ Quiz</button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+     1. LA MIP
+══════════════════════════════════════════════ -->
+  <section class="section active" id="sec-mip">
+    <h2 class="sec-title">Matriz de Transacciones Intersectoriales</h2>
+    <p class="sec-desc">
+      Submatriz de la MIP Argentina 1997 para los 5 sectores seleccionados. Cada celda Z<sub>ij</sub> indica cuánto le
+      vendió el sector <em>i</em> (fila) al sector <em>j</em> (columna) como insumo intermedio, en <strong>miles de
+        pesos</strong>. Hacé clic en cualquier celda para ver su interpretación.
+    </p>
+
+    <div class="leyenda" id="leyenda-mip"></div>
+
+    <div class="cell-info" id="cell-info">
+      👆 Hacé clic en una celda para ver qué transacción representa.
+    </div>
+
+    <div class="mip-wrap">
+      <table class="mip">
+        <thead>
+          <tr>
+            <th class="lh">Sector productor ↓ / Sector comprador →</th>
+            <th>🌾 Agric.</th>
+            <th>🏭 Ind. manuf.</th>
+            <th>⚡ Electr.</th>
+            <th>🛒 Comercio</th>
+            <th>🚛 Transp.</th>
+            <th>Demanda final</th>
+            <th>VBP total</th>
+          </tr>
+        </thead>
+        <tbody id="mip-tbody"></tbody>
+        <tfoot>
+          <tr id="tf-ci"></tr>
+          <tr id="tf-vab"></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="info-box dorado">
+      <strong>¿Cómo leer la tabla?</strong> Las <span
+        style="background:rgba(45,106,79,.12);padding:1px 5px;border-radius:3px;">celdas sombreadas en verde</span>
+      corresponden a transacciones que involucran al sector agropecuario (C01) como comprador o vendedor. El valor de la
+      diagonal principal (en negrita) es el autoconsumo del sector.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+     2. PARTICIPACIÓN
+══════════════════════════════════════════════ -->
+  <section class="section" id="sec-participacion">
+    <h2 class="sec-title">Participación y Valor Agregado</h2>
+    <p class="sec-desc">
+      La MIP permite comparar el Valor Bruto de Producción (VBP), el Valor Agregado Bruto (VAB) y la intensidad con que
+      cada sector demanda insumos del agro. Datos: Argentina 1997, miles de pesos.
+    </p>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>VBP por sector (miles de $)</h3>
+        <div style="position:relative;height:240px;"><canvas id="chartVBP"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Distribución del VAB entre sectores</h3>
+        <div style="position:relative;height:240px;"><canvas id="chartVAB"></canvas></div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:1.4rem;">
+      <h3>Coeficiente técnico A(C01 → sector j): % del VBP de cada sector abastecido por el agro</h3>
+      <div class="barchart" id="barrasCoefAgro"></div>
+    </div>
+
+    <div class="info-box verde">
+      <strong>Lectura clave:</strong> El sector agropecuario tiene el mayor VAB/VBP entre los sectores productivos puros
+      (<strong>60.5%</strong>), superado solo por el comercio (73.9%). La manufactura, en cambio, destina el 55.3% de su
+      VBP a consumo intermedio, reflejando su rol articulador. El coeficiente técnico A(C01→C04) =
+      <strong>0.1038</strong>: por cada peso producido por la industria, se demandan $0.10 de insumos agropecuarios.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+     3. MULTIPLICADORES
+══════════════════════════════════════════════ -->
+  <section class="section" id="sec-multiplicadores">
+    <h2 class="sec-title">Multiplicadores de producción</h2>
+    <p class="sec-desc">
+      El <strong>multiplicador de Leontief</strong> estima cuánto aumenta la producción total ante un incremento de $1
+      en la demanda final de un sector. Se calcula como 1/(1−Σa<sub>ij</sub>) sobre los 5 sectores de la submatriz. Hacé
+      clic en un sector para ver la explicación.
+    </p>
+
+    <div class="coef-grid" id="multGrid"></div>
+    <div class="coef-expl" id="multExpl">
+      👆 Seleccioná un sector para ver la interpretación de su multiplicador.
+    </div>
+
+    <div class="chart-card" style="margin-top:1.4rem;">
+      <h3>Comparación de multiplicadores (submatriz 5 sectores)</h3>
+      <div style="position:relative;height:210px;"><canvas id="chartMult"></canvas></div>
+    </div>
+
+    <div class="info-box dorado" style="margin-top:1.2rem;">
+      <strong>Nota metodológica:</strong> Los multiplicadores presentados corresponden a la <em>submatriz de 5
+        sectores</em>, no a la inversa de Leontief de la MIP completa (16 sectores). Son aproximaciones pedagógicas. En
+      la MIP completa, los multiplicadores son mayores por capturar todos los encadenamientos indirectos.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+     4. SIMULADOR
+══════════════════════════════════════════════ -->
+  <section class="section" id="sec-simulador">
+    <h2 class="sec-title">Simulador de shocks de demanda</h2>
+    <p class="sec-desc">
+      Simulá el efecto de un aumento en la demanda final de cualquiera de los 5 sectores. Los resultados muestran el
+      impacto estimado sobre la producción de todos los sectores vinculados, usando los coeficientes técnicos de la MIP
+      1997.
+    </p>
+
+    <div class="sim-panel">
+      <h3>Parámetros del shock</h3>
+      <div class="slider-row">
+        <label>Sector que recibe el shock</label>
+        <select id="selectSector" onchange="simulacion_cambio()"
+          style="flex:1;padding:7px 12px;border-radius:8px;border:1.5px solid var(--borde);font-family:'Source Sans 3',sans-serif;font-size:.92rem;background:#fff;color:var(--gris-texto);">
+          <option value="C01">🌾 Agricultura, ganadería, caza y silvicultura</option>
+          <option value="C04">🏭 Industria manufacturera</option>
+          <option value="C11">⚡ Suministro de electricidad, gas y agua</option>
+          <option value="C13">🛒 Comercio mayorista y minorista</option>
+          <option value="C15">🚛 Transporte, almac. y comunicaciones</option>
+        </select>
+      </div>
+      <div class="slider-row">
+        <label>Magnitud del incremento en demanda final</label>
+        <input type="range" min="100" max="10000" value="1000" step="100" id="sliderShock" oninput="simular()" />
+        <div class="sv" id="valShock">$1.000 mill.</div>
+      </div>
+      <div class="slider-row">
+        <label>Multiplicador</label>
+        <input type="range" min="0.01" max="3" value="0" step="any" id="sliderMultiplier" oninput="simular()" />
+        <div class="sv" id="valMultiplier">0</div>
+      </div>
+    </div>
+
+    <p class="sec-desc">
+      Se muestra cómo se distribuye la actividad económica asociada al sector seleccionado según su estructura de
+      compras de insumos. Los valores indican qué sectores son más relevantes como proveedores directos y permiten
+      visualizar las interdependencias productivas dentro de la economía.
+    </p>
+
+    <div class="res-grid" id="resGrid"></div>
+
+    <div class="sim-panel">
+      <h3 id="title-panel-sim"></h3>
+      <div class="barchart" id="barrasImpacto"></div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+     5. ENCADENAMIENTOS
+══════════════════════════════════════════════ -->
+  <section class="section" id="sec-encadenamiento">
+    <h2 class="sec-title">Encadenamientos productivos del agro</h2>
+    <p class="sec-desc">
+      La MIP permite identificar encadenamientos <strong>hacia atrás</strong> (lo que el agro compra como insumo a otros
+      sectores) y <strong>hacia adelante</strong> (lo que el agro vende como insumo a otros). Hacé clic en cada eslabón
+      para ver el valor real de la MIP 1997.
+    </p>
+
+    <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.4rem;">
+      <button class="tab-btn active" id="btnAtras" onclick="mostrarCadena('atras')">← Hacia atrás (lo que el agro
+        compra)</button>
+      <button class="tab-btn" id="btnAdelante" onclick="mostrarCadena('adelante')">Lo que el agro vende →</button>
+    </div>
+
+    <div class="cadena-det" id="cadena-det">
+      Hacé clic en un eslabón para ver los valores reales de la MIP.
+    </div>
+
+    <div class="cadena" id="cadenaVis"></div>
+
+    <div class="info-box verde" style="margin-top:1.2rem;">
+      <strong>Índice de encadenamiento del agro (MIP 1997):</strong>
+      El agro tiene un fuerte encadenamiento <strong>hacia adelante</strong> con la industria manufacturera: le vende
+      $13.661.176 miles (56.2% de su VBP). Su encadenamiento hacia atrás dominante es con la manufactura: le compra
+      $3.068.451 miles en maquinaria, insumos y combustibles. El sector energético (C11) es también proveedor relevante
+      ($126.247 miles).
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+     6. QUIZ
+══════════════════════════════════════════════ -->
+  <section class="section" id="sec-quiz">
+    <h2 class="sec-title">Evaluación con datos reales</h2>
+    <p class="sec-desc">
+      Las preguntas están basadas en los valores reales de la MIP Argentina 1997 (INDEC). Todas las respuestas correctas
+      pueden verificarse directamente en la tabla.
+    </p>
+    <div id="quizCont"></div>
+    <div class="quiz-score" id="quizScore" style="display:none;"></div>
+    <button class="btn-reini" id="btnReini" style="display:none;" onclick="reiniciarQuiz()">↺ Reiniciar
+      evaluación</button>
+  </section>
+
+  <footer>
+    Actividad didáctica interactiva · Cuentas Nacionales y Estructura Económica · Facultad de Ciencias Económicas UNNE ·
+    2026<br>
+    Datos: INDEC — Matriz Simétrica Insumo-Producto Argentina, año 1997 (miles de pesos corrientes)
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.2/math.min.js"></script>
+  <script src="mip_scripts.js"></script>
+
+  <!-- Construir leyenda de colores -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const ley = document.getElementById('leyenda-mip');
+      if (ley) {
+        Object.entries(META).forEach(([k, v]) => {
+          ley.innerHTML += `<div class="leyenda-item"><div class="leyenda-dot" style="background:${v.color}"></div>${v.icon} ${v.nombre}</div>`;
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>
