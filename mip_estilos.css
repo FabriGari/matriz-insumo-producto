@@ -32,6 +32,8 @@ body {
   color: var(--gris-texto);
   min-height: 100vh;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── HERO ── */
@@ -396,6 +398,7 @@ table.mip tfoot td.tf-agro {
 
 .coef-card.sel {
   border-width: 2px;
+  box-shadow: 0 2px 15px #2c2c2a;
 }
 
 .coef-card .cc-icon {
@@ -720,7 +723,7 @@ footer {
   color: var(--gris-sec);
   padding: 1.4rem;
   border-top: 1px solid var(--borde);
-  margin-top: 1.5rem;
+  margin-top: auto;
 }
 
 @media (max-width: 580px) {
