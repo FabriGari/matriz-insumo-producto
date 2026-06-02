@@ -335,6 +335,7 @@ table.mip tfoot td.tf-agro {
   border-radius: 5px;
   height: 22px;
   overflow: hidden;
+  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
 }
 
 .bar-fill {

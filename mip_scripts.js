@@ -48,7 +48,7 @@ SECTORES.forEach(f => {
   SECTORES.forEach(c => { A[f][c] = Z[f][c] / VBP[c]; });
 });
 
-// Matriz de Leontief
+// Matriz inversa de Leontief
 const matrixA = SECTORES.map(f =>
   SECTORES.map(c => A[f][c])
 );
@@ -199,12 +199,25 @@ function buildCharts() {
   barCont.innerHTML = '';
   SECTORES.forEach(col => {
     const coef = A['C01'][col];
-    const pct = Math.round(coef * 100 * 4);
     barCont.innerHTML += `
       <div class="bar-row">
         <span class="bl">${META[col].icon} ${META[col].corto}</span>
         <div class="bar-track">
-          <div class="bar-fill ${META[col].cls}" style="width:${Math.min(100, pct * 5)}%">${(coef * 100).toFixed(2)}%</div>
+          <div class="bar-fill ${META[col].cls}" style="width:${coef * 100}%">${(coef * 100).toFixed(2)}%</div>
+        </div>
+      </div>`;
+  });
+
+  // Inversa de leontief agro (cuánto del VBP de cada sector viene del agro)
+  const barCont2 = document.getElementById('barrasCoefAgroInversa');
+  barCont2.innerHTML = '';
+  SECTORES.forEach(col => {
+    const coef = LEONTIEF['C01'][col];
+    barCont2.innerHTML += `
+      <div class="bar-row">
+        <span class="bl">${META[col].icon} ${META[col].corto}</span>
+        <div class="bar-track">
+          <div class="bar-fill ${META[col].cls}" style="width:${coef * 100}%">${(coef * 100).toFixed(2)}%</div>
         </div>
       </div>`;
   });
@@ -326,18 +339,18 @@ function simular() {
 // ── ENCADENAMIENTOS ──────────────────────────────────────────
 const CADENAS = {
   atras: [
-    { icon: '⚡', n: 'Electricidad y gas', s: 'C11 → C01', det: 'El agro consume <em>$126.247 miles</em> de electricidad, gas y agua como insumo de riego, secado de granos y refrigeración. Coeficiente técnico: 0.52%.', id: 'C11' },
-    { icon: '🏭', n: 'Ind. manufacturera', s: 'C04 → C01', det: 'La manufactura provee al agro <em>$3.068.451 miles</em> en insumos: maquinaria agrícola, agroquímicos, fertilizantes y combustibles. Es el mayor insumo del agro. Coef.: 12.62% del VBP agro.', id: 'C04' },
-    { icon: '🛒', n: 'Comercio mayorista', s: 'C13 → C01', det: 'El comercio le vende al agro bienes intermedios por <em>$561.343 miles</em>: semillas, insumos varios vía distribuidores. Coef.: 2.31%.', id: 'C13' },
+    { icon: '⚡', n: 'Electricidad, gas y agua', s: '', det: 'El agro consume <em>$126.247 miles</em> de electricidad, gas y agua como insumo de riego, secado de granos y refrigeración. Coeficiente técnico: 0.52%.', id: 'C11' },
+    { icon: '🏭', n: 'Ind. manufacturera', s: '', det: 'La manufactura provee al agro <em>$3.068.451 miles</em> en insumos: maquinaria agrícola, agroquímicos, fertilizantes y combustibles. Es el mayor insumo del agro. Coef.: 12.62% del VBP agro.', id: 'C04' },
+    { icon: '🛒', n: 'Comercio mayorista', s: '', det: 'El comercio le vende al agro bienes intermedios por <em>$561.343 miles</em>: semillas, insumos varios vía distribuidores. Coef.: 2.31%.', id: 'C13' },
     { icon: '🌾', n: 'AGRO', s: 'Sector central', det: 'El sector agropecuario (C01) es el nodo generador. Sus encadenamientos hacia atrás (lo que compra) equivalen al <em>39.5% de su propio VBP</em>. Depende fuertemente de la industria manufacturera.', id: 'C01' },
-    { icon: '🚛', n: 'Transporte', s: 'C15 → C01', det: 'Transporte y comunicaciones le vende al agro <em>$339.292 miles</em>: logística de insumos, telecomunicaciones rurales. Coef.: 1.40%.', id: 'C15' },
+    { icon: '🚛', n: 'Transporte', s: '', det: 'Transporte y comunicaciones le vende al agro <em>$339.292 miles</em>: logística de insumos, telecomunicaciones rurales. Coef.: 1.40%.', id: 'C15' },
   ],
   adelante: [
     { icon: '🌾', n: 'AGRO', s: 'Sector central', det: 'La producción agropecuaria (C01) genera <em>$24.317.791 miles de VBP</em>. Como proveedor de insumos, su principal destino es la industria manufacturera, que absorbe el 56.2% de su VBP.', id: 'C01' },
-    { icon: '🏭', n: 'Ind. manufacturera', s: 'C01 → C04', det: 'El agro vende a manufactura <em>$13.661.176 miles</em> (56.2% del VBP agro): granos, oleaginosas, carnes y fibras que abastecen a la agroindustria exportadora.', id: 'C04' },
-    { icon: '⚡', n: 'Electricidad', s: 'C01 → C11', det: 'El flujo de C01 hacia C11 es <em>$0</em>: el agro no vende como insumo a la energía. La relación es inversa (C11 provee al agro).', id: 'C11' },
-    { icon: '🛒', n: 'Comercio', s: 'C01 → C13', det: 'El flujo C01→C13 es <em>$0</em> según la MIP 1997. Los productos agropecuarios llegan al comercio con transformación industrial previa, no como insumo directo al sector comercio.', id: 'C13' },
-    { icon: '🚛', n: 'Transporte', s: 'C01 → C15', det: 'El agro vende apenas <em>$7 miles</em> a transporte como insumo. La relación dominante es inversa: el transporte presta servicios al agro, no al revés.', id: 'C15' },
+    { icon: '🏭', n: 'Ind. manufacturera', s: '', det: 'El agro vende a manufactura <em>$13.661.176 miles</em> (56.2% del VBP agro): granos, oleaginosas, carnes y fibras que abastecen a la agroindustria exportadora.', id: 'C04' },
+    { icon: '⚡', n: 'Electricidad', s: '', det: 'El flujo de C01 hacia C11 es <em>$0</em>: el agro no vende como insumo a la energía. La relación es inversa (C11 provee al agro).', id: 'C11' },
+    { icon: '🛒', n: 'Comercio', s: '', det: 'El flujo C01→C13 es <em>$0</em> según la MIP 1997. Los productos agropecuarios llegan al comercio con transformación industrial previa, no como insumo directo al sector comercio.', id: 'C13' },
+    { icon: '🚛', n: 'Transporte', s: '', det: 'El agro vende apenas <em>$7 miles</em> a transporte como insumo. La relación dominante es inversa: el transporte presta servicios al agro, no al revés.', id: 'C15' },
   ]
 };
 
@@ -374,13 +387,13 @@ function renderCadena() {
 // ── QUIZ ─────────────────────────────────────────────────────
 const PREGUNTAS = [
   {
-    p: 'Según la MIP Argentina 1997, ¿cuál es el principal comprador de insumos del sector agropecuario (C01)?',
-    opts: ['Comercio mayorista y minorista (C13)', 'Industria manufacturera (C04)', 'Transporte y comunicaciones (C15)', 'Electricidad, gas y agua (C11)'],
+    p: 'Según la MIP Argentina 1997, ¿cuál es el principal comprador de insumos del sector agropecuario?',
+    opts: ['Comercio mayorista y minorista', 'Industria manufacturera', 'Transporte y comunicaciones', 'Electricidad, gas y agua'],
     resp: 1,
-    exp: `Correcto. C01 vende $13.661.176 miles a la industria manufacturera, representando el 56.2% de su VBP. Este flujo alimenta la agroindustria de aceites, harinas, carnes y derivados.`
+    exp: `Correcto. El sector agro vende $13.661.176 miles a la industria manufacturera, representando el 56.2% de su VBP. Este flujo alimenta la agroindustria de aceites, harinas, carnes y derivados.`
   },
   {
-    p: `¿Qué significa que el coeficiente técnico A(C01,C04) sea aproximadamente 0.1038?`,
+    p: `¿Qué significa que el coeficiente técnico A(Agro, Ind. Manu) sea aproximadamente 0.1038?`,
     opts: [
       'El 10.38% del VBP del agro proviene de la manufactura',
       'Por cada peso producido por la industria manufacturera, se requieren $0.1038 de insumos del agro',
@@ -388,16 +401,16 @@ const PREGUNTAS = [
       'La manufactura usa el 10.38% de su VBP en insumos agropecuarios'
     ],
     resp: 1,
-    exp: 'El coeficiente técnico A_ij = Z_ij / VBP_j indica cuántos pesos de insumo del sector i se necesitan por cada peso producido por el sector j. A(C01,C04) = 13.661.176 / 131.577.654 ≈ 0.1038: por cada peso de producción manufacturera, se demandan $0.1038 de insumos agropecuarios.'
+    exp: 'El coeficiente técnico A_ij = Z_ij / VBP_j indica cuántos pesos de insumo del sector i se necesitan por cada peso producido por el sector j. A(Agro, Ind. Manu) = 13.661.176 / 131.577.654 ≈ 0.1038: por cada peso de producción manufacturera, se demandan $0.1038 de insumos agropecuarios.'
   },
   {
     p: '¿Cuál es el sector con mayor Valor Agregado Bruto (VAB) en proporción a su VBP entre los 5 analizados?',
-    opts: ['Agricultura (C01) con 60.5%', 'Industria manufacturera (C04) con 44.7%', 'Comercio mayorista (C13) con 73.9%', 'Transporte (C15) con 67.6%'],
+    opts: ['Agricultura', 'Industria manufacturera', 'Comercio mayorista', 'Transporte'],
     resp: 2,
     exp: `El comercio mayorista y minorista (C13) tiene un VAB/VBP = 73.9%, el más alto de los 5 sectores. Esto indica que el comercio incorpora poco consumo intermedio en relación a su producción; su valor surge principalmente del trabajo y la intermediación, no de insumos físicos.`
   },
   {
-    p: '¿Cuál es la interpretación correcta del flujo Z(C01→C13) = 0 en la MIP 1997?',
+    p: '¿Cuál es la interpretación correcta del flujo Z(Agricultura→Comercio mayorista y minorista) = 0 en la MIP 1997?',
     opts: [
       'El agro no exporta al exterior',
       'El sector comercio no genera valor agregado',

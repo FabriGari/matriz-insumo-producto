@@ -105,16 +105,105 @@
     </div>
 
     <div class="chart-card" style="margin-bottom:1.4rem;">
-      <h3>Coeficiente técnico A(C01 → sector j): % del VBP de cada sector abastecido por el agro</h3>
+      <h2 style="margin: 14.4px;">Coeficientes técnicos</h2>
+      <h3>A(Agricultura → sector j): % del VBP de cada sector abastecido por el agro</h3>
       <div class="barchart" id="barrasCoefAgro"></div>
+      <h3 style="margin: 14.4px;">A(sector j → Agricultura): % del VBP de cada sector
+        que
+        abastece al agro
+      </h3>
+      <div class="barchart">
+        <div class="bar-row">
+          <span class="bl">🌾 Agricultura</span>
+          <div class="bar-track">
+            <div class="bar-fill c01" style="width:18.86%">18.86%</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <span class="bl">🏭 Ind. manuf.</span>
+          <div class="bar-track">
+            <div class="bar-fill c04" style="width:12.62%">12.62%</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <span class="bl">⚡ Electricidad</span>
+          <div class="bar-track">
+            <div class="bar-fill c11" style="width:0.52%">0.52%</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <span class="bl">🛒 Comercio</span>
+          <div class="bar-track">
+            <div class="bar-fill c13" style="width:2.31%">2.31%</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <span class="bl">🚛 Transporte</span>
+          <div class="bar-track">
+            <div class="bar-fill c15" style="width:1.4%">1.4%</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="info-box verde">
-      <strong>Lectura clave:</strong> El sector agropecuario tiene el mayor VAB/VBP entre los sectores productivos puros
+      El sector agropecuario tiene el mayor VAB/VBP entre los sectores productivos puros
       (<strong>60.5%</strong>), superado solo por el comercio (73.9%). La manufactura, en cambio, destina el 55.3% de su
-      VBP a consumo intermedio, reflejando su rol articulador. El coeficiente técnico A(C01→C04) =
+      VBP a consumo intermedio, reflejando su rol articulador. El coeficiente técnico A(Agricultura → Ind.
+      Manufacturera) =
       <strong>0.1038</strong>: por cada peso producido por la industria, se demandan $0.10 de insumos agropecuarios.
+      El coeficiente técnico A(Manufacturera → Agricultura) =
+      <strong>0.1262</strong>: por cada peso producido por la Agricultura, se demandan $0.12 de insumos de la industria
+      manufacturera.
     </div>
+
+    <div class="chart-card" style="margin-bottom:1.4rem;">
+      <h2 style="margin: 14.4px;">Inversa de Leontief</h2>
+      <h3>A(Agricultura → sector j): ¿En qué medida el sector Agricultura participa en la satisfacción de la demanda
+        final de
+        todos los sectores?</h3>
+      <div class="barchart" id="barrasCoefAgroInversa"></div>
+      <h3 style="margin: 14.4px;">A(sector j → Agricultura):
+        ¿Cuánto debe aumentar la producción de cada sector si la demanda final del sector Agricultura aumenta en una
+        unidad?
+      </h3>
+      <div class="barchart">
+        <div class="bar-row">
+          <span class="bl">🌾 Agricultura</span>
+          <div class="bar-track">
+            <div class="bar-fill c01" style="width:126.02%">126.02%</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <span class="bl">🏭 Ind. manuf.</span>
+          <div class="bar-track">
+            <div class="bar-fill c04" style="width:22.96%">22.96%</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <span class="bl">⚡ Electricidad</span>
+          <div class="bar-track">
+            <div class="bar-fill c11" style="width:1.44%">1.44%</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <span class="bl">🛒 Comercio</span>
+          <div class="bar-track">
+            <div class="bar-fill c13" style="width:4.28%">4.28%</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <span class="bl">🚛 Transporte</span>
+          <div class="bar-track">
+            <div class="bar-fill c15" style="width:3.68%">3.68%</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 14.4px;" class="info-box verde">
+        Un aumento de la demanda final agropecuaria no sólo afecta al propio agro y a la
+        industria alimenticia, sino también a transporte, comercio y energía mediante sucesivas rondas de producción.
+      </div>
   </section>
 
   <!-- ══════════════════════════════════════════════
