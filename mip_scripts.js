@@ -82,11 +82,19 @@ function fmtM(n) { return (n / 1000000).toFixed(1) + ' M'; }
 function fmtB(n) { return '$' + Math.round(n).toLocaleString('es-AR'); }
 
 // ── NAVEGACIÓN ──────────────────────────────────────────────
+var encBtnFlag = 1;
 function mostrarSeccion(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (encBtnFlag == 1) {
+    document.getElementById('btnAtras').classList.add('active');
+  } else {
+    document.getElementById('btnAdelante').classList.add('active');
+  }
   document.getElementById('sec-' + id).classList.add('active');
   event.currentTarget.classList.add('active');
+  console.log(document.getElementById('btnAtras').className)
+
 }
 
 // ── CELDA INFO ───────────────────────────────────────────────
@@ -232,7 +240,7 @@ function buildMult() {
   const explTextos = {
     C01: `El agro tiene un multiplicador de <strong>${MULT.C01.valor.toFixed(3)}</strong>. Esto significa que ante un incremento de $1 en la demanda final agropecuaria, la producción total de los 5 sectores aumenta en $${MULT.C01.valor.toFixed(2)}. Su suma de coeficientes técnicos (${(MULT.C01.suma * 100).toFixed(1)}% del VBP) refleja la demanda de insumos: principalmente industria manufacturera ($3.068 mill.) y transporte ($339 mill.).`,
     C04: `La industria manufacturera registra el <strong>mayor multiplicador (${MULT.C04.valor.toFixed(3)})</strong> de los 5 sectores. Cada peso de demanda final industrial genera $${MULT.C04.valor.toFixed(2)} de producción adicional, dado que absorbe insumos de todos los demás sectores: agrícolas, energía, comercio y transporte.`,
-    C11: `Electricidad, gas y agua tiene un multiplicador de <strong>${MULT.C11.valor.toFixed(3)}</strong>. Su alto consumo propio (autoconsumo de $2.025.245 miles, coef. 0.195) refleja la naturaleza del sector. Es insumo crítico para la industria manufacturera ($1.982.000 miles).`,
+    C11: `El sector energético tiene un multiplicador de <strong>${MULT.C11.valor.toFixed(3)}</strong>. Su alto consumo propio (autoconsumo de $2.025.245 miles, coef. 0.195) refleja la naturaleza del sector. Es insumo crítico para la industria manufacturera ($1.982.000 miles).`,
     C13: `Comercio mayorista y minorista muestra el <strong>multiplicador más bajo (${MULT.C13.valor.toFixed(3)})</strong>. Su valor agregado es altísimo (73.9% del VBP), lo que implica que requiere pocos insumos intermedios de los 5 sectores. No compra nada del agro directamente (C01→C13 = 0).`,
     C15: `Transporte y comunicaciones registra un multiplicador de <strong>${MULT.C15.valor.toFixed(3)}</strong>. Recibe importantes insumos de manufactura ($6.197.991 miles), de sí mismo ($2.419.209 miles, autoconsumo) y de comercio ($1.422.801 miles). Es articulador clave de la cadena agro-exportadora.`,
   };
@@ -341,7 +349,7 @@ function simular() {
 // ── ENCADENAMIENTOS ──────────────────────────────────────────
 const CADENAS = {
   atras: [
-    { icon: '⚡', n: 'Electricidad, gas y agua', s: '', det: 'El agro consume <em>$126.247 miles</em> de electricidad, gas y agua como insumo de riego, secado de granos y refrigeración. Coeficiente técnico: 0.52%.', id: 'C11' },
+    { icon: '⚡', n: 'Electricidad, gas y agua', s: '', det: 'El agro consume <em>$126.247 miles</em> en electricidad, gas y agua como insumo de riego, secado de granos y refrigeración. Coeficiente técnico: 0.52%.', id: 'C11' },
     { icon: '🏭', n: 'Ind. manufacturera', s: '', det: 'La manufactura provee al agro <em>$3.068.451 miles</em> en insumos: maquinaria agrícola, agroquímicos, fertilizantes y combustibles. Es el mayor insumo del agro. Coef.: 12.62% del VBP agro.', id: 'C04' },
     { icon: '🛒', n: 'Comercio mayorista', s: '', det: 'El comercio le vende al agro bienes intermedios por <em>$561.343 miles</em>: semillas, insumos varios vía distribuidores. Coef.: 2.31%.', id: 'C13' },
     { icon: '🌾', n: 'AGRO', s: 'Sector central', det: 'El sector agropecuario es el nodo generador. Sus encadenamientos hacia atrás (lo que compra) equivalen al <em>39.5% de su propio VBP</em>. Depende fuertemente de la industria manufacturera.', id: 'C01' },
@@ -350,17 +358,21 @@ const CADENAS = {
   adelante: [
     { icon: '🌾', n: 'AGRO', s: 'Sector central', det: 'La producción agropecuaria genera <em>$24.317.791 miles de VBP</em>. Como proveedor de insumos, su principal destino es la industria manufacturera, que absorbe el 56.2% de su VBP.', id: 'C01' },
     { icon: '🏭', n: 'Ind. manufacturera', s: '', det: 'El agro vende a manufactura <em>$13.661.176 miles</em> (56.2% del VBP agro): granos, oleaginosas, carnes y fibras que abastecen a la agroindustria exportadora.', id: 'C04' },
-    { icon: '⚡', n: 'Electricidad', s: '', det: 'El flujo de C01 hacia C11 es <em>$0</em>: el agro no vende como insumo a la energía. La relación es inversa (El sector Suministro de electricidad, gas y agua) provee al agro).', id: 'C11' },
+    { icon: '⚡', n: 'Electricidad', s: '', det: 'El flujo del Agro hacia el sector energético es <em>$0</em>: el agro no vende como insumo a la energía. La relación es inversa (El sector energético provee al agro).', id: 'C11' },
     { icon: '🛒', n: 'Comercio', s: '', det: 'El flujo Agro→Comercio mayorista y minorista es <em>$0</em> según la MIP 1997. Los productos agropecuarios llegan al comercio con transformación industrial previa, no como insumo directo al sector comercio.', id: 'C13' },
     { icon: '🚛', n: 'Transporte', s: '', det: 'El agro vende apenas <em>$7 miles</em> a transporte como insumo. La relación dominante es inversa: el transporte presta servicios al agro, no al revés.', id: 'C15' },
-  ]
+  ],
+  default: "Hacé clic en un eslabón para ver los valores reales de la MIP."
 };
 
+console.log(document.getElementById('btnAtras').className)
 let cadenaActual = 'atras';
 function mostrarCadena(tipo) {
   cadenaActual = tipo;
   document.getElementById('btnAtras').classList.toggle('active', tipo === 'atras');
   document.getElementById('btnAdelante').classList.toggle('active', tipo === 'adelante');
+  encBtnFlag = 1 ? tipo == 'atras' : 2;
+  document.getElementById('cadena-det').innerHTML = "Hacé clic en un eslabón para ver los valores reales de la MIP."
   renderCadena();
 }
 function renderCadena() {
@@ -482,3 +494,4 @@ document.addEventListener('DOMContentLoaded', () => {
   renderQuiz();
   simular();
 });
+
