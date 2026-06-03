@@ -248,7 +248,8 @@
     <h2 class="sec-title">Simulador de shocks de demanda</h2>
     <p class="sec-desc">
       Simulá el efecto de un aumento en la demanda final de cualquiera de los 5 sectores. Los resultados muestran el
-      impacto estimado sobre la producción de todos los sectores vinculados, usando los coeficientes técnicos de la MIP
+      impacto estimado sobre la producción de todos los sectores vinculados, usando los coeficientes de requerimientos
+      directos e indirectos de producción de la MIP
       1997.
     </p>
 
@@ -256,7 +257,7 @@
       <h3>Parámetros del shock</h3>
       <div class="slider-row">
         <label>Sector que recibe el shock</label>
-        <select id="selectSector" onchange="simulacion_cambio()"
+        <select title="sector" id="selectSector" onchange="simulacion_cambio()"
           style="flex:1;padding:7px 12px;border-radius:8px;border:1.5px solid var(--borde);font-family:'Source Sans 3',sans-serif;font-size:.92rem;background:#fff;color:var(--gris-texto);">
           <option value="C01">🌾 Agricultura, ganadería, caza y silvicultura</option>
           <option value="C04">🏭 Industria manufacturera</option>
@@ -275,8 +276,8 @@
 
     <p class="sec-desc">
       Se muestra cómo se distribuye la actividad económica asociada al sector seleccionado según su estructura de
-      compras de insumos. Los valores indican qué sectores son más relevantes como proveedores directos y permiten
-      visualizar las interdependencias productivas dentro de la economía.
+      compras de insumos. Los valores indican cuanto tienen que aumentar de producción cada sector para satisfacer el
+      shock de demanda.
     </p>
 
     <div class="res-grid" id="resGrid"></div>
