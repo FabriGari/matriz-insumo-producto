@@ -16,6 +16,7 @@
   --c11: #c07820;
   --c13: #7b3fbf;
   --c15: #b53030;
+  --demasSectores: #b53098;
 }
 
 *,
@@ -370,6 +371,10 @@ table.mip tfoot td.tf-agro {
 
 .bar-fill.c15 {
   background: var(--c15);
+}
+
+.bar-fill.demasSectores {
+  background: var(--demasSectores);
 }
 
 /* ── COEF ── */

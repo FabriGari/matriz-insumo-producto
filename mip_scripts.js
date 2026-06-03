@@ -41,7 +41,6 @@ for (const fila in Z) {
 const VAB = {};
 const VABreal = { C01: 13698443, C04: 42361431, C11: 4786097, C13: 30174725, C15: 19936406 };
 SECTORES.forEach(s => { VAB[s] = VBP[s] - DI_COL[s]; });
-console.log(VAB)
 
 // Coeficientes técnicos A_ij = Z_ij / VBP_j
 const A = {};
@@ -49,6 +48,45 @@ SECTORES.forEach(f => {
   A[f] = {};
   SECTORES.forEach(c => { A[f][c] = Z[f][c] / VBP[c]; });
 });
+
+// Inversa de Leontief
+const INVERSA = {
+  C01: {
+    C01: 1.261922,
+    C04: 0.229623,
+    C11: 0.014466,
+    C13: 0.042847,
+    C15: 0.036793
+  },
+  C04: {
+    C01: 0.177289,
+    C04: 1.384061,
+    C11: 0.031039,
+    C13: 0.076963,
+    C15: 0.084528
+  },
+  C11: {
+    C01: 0.010607,
+    C04: 0.081243,
+    C11: 1.249475,
+    C13: 0.015600,
+    C15: 0.107140
+  },
+  C13: {
+    C01: 0.010060,
+    C04: 0.077462,
+    C11: 0.017431,
+    C13: 1.011683,
+    C15: 0.049542
+  },
+  C15: {
+    C01: 0.019503,
+    C04: 0.149995,
+    C11: 0.016078,
+    C13: 0.019975,
+    C15: 1.094440
+  },
+};
 
 // Matriz inversa de Leontief
 const matrixA = SECTORES.map(f =>
@@ -66,11 +104,32 @@ SECTORES.forEach((f, i) => {
 });
 
 // Multiplicadores (proxy 1-sector: 1/(1 - suma_col_A))
-const MULT = {};
-SECTORES.forEach(c => {
-  const suma = SECTORES.reduce((acc, f) => acc + A[f][c], 0);
-  MULT[c] = { suma, valor: 1 / (1 - suma) };
-});
+const MULT = {
+  C01: {
+    suma: 0.3952,
+    valor: 1.6866
+  },
+  C04: {
+    suma: 0.5534,
+    valor: 1.9492
+  },
+  C11: {
+    suma: 0.4959,
+    valor: 1.7977
+  },
+  C13: {
+    suma: 0.2612,
+    valor: 1.3892
+  },
+  C15: {
+    suma: 0.3240,
+    valor: 1.5137
+  },
+};
+// SECTORES.forEach(c => {
+//   const suma = SECTORES.reduce((acc, f) => acc + A[f][c], 0);
+//   MULT[c] = { suma, valor: 1 / (1 - suma) };
+// });
 
 // Formatear miles con puntos
 function fmt(n) {
@@ -93,8 +152,6 @@ function mostrarSeccion(id) {
   }
   document.getElementById('sec-' + id).classList.add('active');
   event.currentTarget.classList.add('active');
-  console.log(document.getElementById('btnAtras').className)
-
 }
 
 // ── CELDA INFO ───────────────────────────────────────────────
@@ -285,12 +342,9 @@ function buildMult() {
 }
 
 // ── SIMULADOR ────────────────────────────────────────────────
-document.getElementById('sliderMultiplier').value = MULT[document.getElementById('selectSector').value].valor.toFixed(3);
 document.getElementById('title-panel-sim').innerText = "Sectores movilizados por: " + document.querySelector("#selectSector option:checked").textContent;
 function simulacion_cambio() {
   const sectorSel = document.getElementById('selectSector').value;
-  const mult = MULT[sectorSel].valor;
-  document.getElementById('sliderMultiplier').value = mult.toFixed(3);
   simular();
 }
 
@@ -300,19 +354,22 @@ function simular() {
   document.getElementById('title-panel-sim').innerText = "Sectores movilizados por: " + selText;
 
   const shock = parseFloat(document.getElementById('sliderShock').value);
-  const multiplicador = parseFloat(document.getElementById('sliderMultiplier').value);
   const sectorSel = document.getElementById('selectSector').value;
+  const multiplicador = MULT[sectorSel].valor;
+  document.getElementById('multSimulador').innerHTML = `<strong>Multiplicador: ${multiplicador}</strong>`;
   document.getElementById('valShock').textContent = '$' + shock.toLocaleString('es-AR') + ' mill.';
-  document.getElementById('valMultiplier').textContent = multiplicador.toLocaleString('es-AR');
 
   const mult = multiplicador;
   const totalEcon = (shock * mult).toFixed(1);
 
+  console.log(sectorSel)
+
   // Impacto sobre cada sector usando coeficientes de la columna del sector
   const impactos = {};
   SECTORES.forEach(f => {
-    impactos[f] = (shock * A[f][sectorSel] * mult).toFixed(1);
+    impactos[f] = (shock * INVERSA[f][sectorSel]).toFixed(1);
   });
+  const demasSectores = totalEcon - impactos['C01'] - impactos['C04'] - impactos['C11'] - impactos['C13'] - impactos['C15'];
 
   const grid = document.getElementById('resGrid');
   grid.innerHTML = `
@@ -326,7 +383,12 @@ function simular() {
       <div class="rt">${META[s].icon} ${META[s].corto}</div>
       <div class="rv" style="color:${META[s].color}">$${parseFloat(impactos[s]).toLocaleString('es-AR')}</div>
       <div class="ru">millones generados</div>
-    </div>`).join('');
+    </div>`).join('') +
+    `<div class="res-card">
+      <div class="rt">Demas sectores</div>
+      <div class="rv">$${parseFloat(demasSectores).toLocaleString('es-AR')}</div>
+      <div class="ru">mult. = ${mult.toFixed(3)}</div>
+    </div>`;
 
   // Barras de impacto
   const barCont = document.getElementById('barrasImpacto');
@@ -335,15 +397,21 @@ function simular() {
   SECTORES.forEach(s => {
     const val = parseFloat(impactos[s]);
     const pct = (val / sumImpactos) * 100;
-    console.log(pct)
     barCont.innerHTML += `
       <div class="bar-row">
         <span class="bl">${META[s].icon} ${META[s].corto}</span>
         <div class="bar-track">
-          <div class="bar-fill ${META[s].cls}" style="width:${Math.max(pct, 2)}%">$${val.toLocaleString('es-AR')}M</div>
+          <div class="bar-fill ${META[s].cls}" style="width:${impactos[s] * 100 / totalEcon}%">$${val.toLocaleString('es-AR')}M</div>
         </div>
       </div>`;
   });
+  barCont.innerHTML += `
+      <div class="bar-row">
+        <span class="bl">Demas sectores</span>
+        <div class="bar-track">
+          <div class="bar-fill demasSectores" style="width:${demasSectores * 100 / totalEcon}%">$${demasSectores.toLocaleString('es-AR')}M</div>
+        </div>
+      </div>`;
 }
 
 // ── ENCADENAMIENTOS ──────────────────────────────────────────
@@ -365,7 +433,6 @@ const CADENAS = {
   default: "Hacé clic en un eslabón para ver los valores reales de la MIP."
 };
 
-console.log(document.getElementById('btnAtras').className)
 let cadenaActual = 'atras';
 function mostrarCadena(tipo) {
   cadenaActual = tipo;

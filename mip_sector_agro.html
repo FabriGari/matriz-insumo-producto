@@ -18,7 +18,7 @@
 ══════════════════════════════════════════════ -->
   <div class="hero">
     <div class="badge">Cuentas nacional y estructura económica - FCE UNNE</div>
-    <h1>Matriz Insumo-Producto y<br>el Sector Agropecuario</h1>
+    <h1>Matriz Insumo-Producto y el <br>Sector Agropecuario<br>INDEC 1997</h1>
     <p>Análisis de 5 sectores clave: Agricultura · Industria manufacturera · Electricidad, gas y agua · Comercio ·
       Transporte</p>
     <span class="fuente">Fuente: INDEC — Matriz Simétrica Insumo-Producto, República Argentina, 1997</span>
@@ -221,8 +221,8 @@
     <h2 class="sec-title">Multiplicadores de producción</h2>
     <p class="sec-desc">
       El <strong>multiplicador de Leontief</strong> estima cuánto aumenta la producción total ante un incremento de $1
-      en la demanda final de un sector. Se calcula como 1/(1−Σa<sub>ij</sub>) sobre los 5 sectores de la submatriz. Hacé
-      clic en un sector para ver la explicación.
+      en la demanda final de un sector. <strong>Hacé
+        clic en un sector para ver la explicación.</strong>
     </p>
 
     <div class="coef-grid" id="multGrid"></div>
@@ -236,9 +236,8 @@
     </div>
 
     <div class="info-box dorado" style="margin-top:1.2rem;">
-      <strong>Nota metodológica:</strong> Los multiplicadores presentados corresponden a la <em>submatriz de 5
-        sectores</em>, no a la inversa de Leontief de la MIP completa (16 sectores). Son aproximaciones pedagógicas. En
-      la MIP completa, los multiplicadores son mayores por capturar todos los encadenamientos indirectos.
+      <strong>Nota metodológica:</strong> Los multiplicadores presentados corresponden a la inversa de Leontief de la
+      MIP completa del 1997 (16 sectores).
     </div>
   </section>
 
@@ -266,15 +265,11 @@
           <option value="C15">🚛 Transporte, almac. y comunicaciones</option>
         </select>
       </div>
+      <p style="margin-bottom: 25px;" id="multSimulador"><strong>Multiplicador: </strong></p>
       <div class="slider-row">
         <label>Magnitud del incremento en demanda final</label>
         <input type="range" min="100" max="10000" value="1000" step="100" id="sliderShock" oninput="simular()" />
         <div class="sv" id="valShock">$1.000 mill.</div>
-      </div>
-      <div class="slider-row">
-        <label>Multiplicador</label>
-        <input type="range" min="0.01" max="3" value="0" step="any" id="sliderMultiplier" oninput="simular()" />
-        <div class="sv" id="valMultiplier">0</div>
       </div>
     </div>
 
